@@ -7,8 +7,12 @@ import CartIcon from './CartIcon'
 import FavouriteButton from './FavouriteButton'
 import SignIn from './SignIn'
 import MobileMenu from './MobileMenu'
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs'
 
-function Header() {
+const Header = async() => {
+  const user = await currentUser();
+  const { userId } = await auth();
   return (
     <header className='bg-white py-5'>
         <Container className='flex items-center justify-between text-lightColor'>
@@ -21,7 +25,12 @@ function Header() {
             <SearchBar />
             <CartIcon />
             <FavouriteButton />
-            <SignIn />
+            <ClerkLoaded>
+              <SignedIn>
+                <UserButton/>
+              </SignedIn>
+              {!user && <SignIn />}
+            </ClerkLoaded>
           </div>
         </Container>
     </header>
